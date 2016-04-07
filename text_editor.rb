@@ -7,22 +7,9 @@ class TextEditor
 
   private
 
-  def new_or_load
-    input = nil
-    until input == "N" || input == "L"
-      puts "Would you like to start a (N)ew file or (L)oad an existing file?"
-      input = gets.chomp.upcase
-    end
-
-    input
-  end
-
   def run
     greet
-    if new_or_load == "L"
-      load
-      print
-    end
+    prompt_load
 
     puts
     puts 'Type "quit" to stop entering text.'
@@ -65,7 +52,7 @@ class TextEditor
     puts
     response = gets.chomp.upcase
 
-    if response = "Y"
+    if response == "Y"
       line = nil
       until (1..@text.length).include? line
         puts
@@ -93,9 +80,9 @@ class TextEditor
   def prompt_save
     puts "Would you like to save? (Y/N)"
     puts
-    response = gets.chomp.upcase
+    input = gets.chomp.upcase
 
-    save if response = "Y"
+    save if input = "Y"
   end
 
   def save
@@ -103,10 +90,23 @@ class TextEditor
     file.puts(@text)
   end
 
+  def prompt_load
+    input = nil
+    until input == "N" || input == "L"
+      puts "Would you like to start a (N)ew file or (L)oad an existing file?"
+      puts
+      input = gets.chomp.upcase
+    end
+
+    load if input == "L"
+  end
+
   def load
     file = File.open(@save_file, "r")
     file.each_line {|line| @text << line}
+    print
   end
 end
 
+require 'pry'
 TextEditor.new
