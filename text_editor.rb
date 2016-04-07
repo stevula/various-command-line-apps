@@ -1,17 +1,43 @@
 class TextEditor
   def initialize
+    @save_file = "text_editor_save.txt"
     @text = []
-    greet
-
-    if new_or_load == "N"
-      run
-    else
-      # load file into memory
-      run
-    end
+    run
   end
 
   private
+
+  def new_or_load
+    input = nil
+    until input == "N" || input == "L"
+      puts "Would you like to start a (N)ew file or (L)oad an existing file?"
+      input = gets.chomp.upcase
+    end
+
+    input
+  end
+
+  def run
+    greet
+    if new_or_load == "L"
+      load
+      print
+    end
+
+    puts
+    puts 'Type "quit" to stop entering text.'
+    puts
+
+    loop do
+      line = gets.chomp
+      break if line == "quit"
+      @text << line
+    end
+
+    print
+    prompt_edit
+    prompt_save
+  end
 
   def greet
     greeting = %q(
@@ -25,31 +51,6 @@ class TextEditor
 
     puts greeting
     puts
-  end
-
-  def new_or_load
-    input = nil
-    until input == "N" || input == "L"
-      puts "Would you like to start a (N)ew file or (L)oad an existing file?"
-      input = gets.chomp.upcase
-    end
-
-    input
-  end
-
-  def run
-    puts
-    puts 'Type "quit" to stop entering text.'
-    puts
-
-    loop do
-      line = gets.chomp
-      break if line == "quit"
-      @text << line
-    end
-
-    print
-    prompt_edit
   end
 
   def print
@@ -89,10 +90,22 @@ class TextEditor
     print
   end
 
+  def prompt_save
+    puts "Would you like to save? (Y/N)"
+    puts
+    response = gets.chomp.upcase
+
+    save if response = "Y"
+  end
+
   def save
+    file = File.open(@save_file, "w")
+    file.puts(@text)
   end
 
   def load
+    file = File.open(@save_file, "r")
+    file.each_line {|line| @text << line}
   end
 end
 
