@@ -40,6 +40,27 @@ class TextEditor
     puts
   end
 
+  def prompt_load
+    input = nil
+    until input == "N" || input == "L"
+      puts "Would you like to start a (N)ew file or (L)oad an existing file?"
+      puts
+      input = gets.chomp.upcase
+    end
+
+    load if input == "L"
+  end
+
+  def load
+    if File.exist?(@save_file)
+      file = File.open(@save_file, "r")
+      file.each_line {|line| @text << line}
+    else
+      puts "No saved file exists. Starting new file."
+    end
+    puts
+  end
+
   def print
     puts
     puts "You wrote:"
@@ -89,24 +110,6 @@ class TextEditor
     file = File.open(@save_file, "w")
     file.puts(@text)
   end
-
-  def prompt_load
-    input = nil
-    until input == "N" || input == "L"
-      puts "Would you like to start a (N)ew file or (L)oad an existing file?"
-      puts
-      input = gets.chomp.upcase
-    end
-
-    load if input == "L"
-  end
-
-  def load
-    file = File.open(@save_file, "r")
-    file.each_line {|line| @text << line}
-    print
-  end
 end
 
-require 'pry'
 TextEditor.new
